@@ -7,10 +7,18 @@ class ScrollOperation extends StatefulWidget {
   _ScrollOperationState createState() => _ScrollOperationState();
 }
 
+abstract class ScrollListener {
+  void onScrollStarted();
+  void onScrollEnded();
+  void scrollMovement(double x, double y);
+}
+
 class _ScrollOperationState extends State<ScrollOperation> {
 
   @override
   Widget build(BuildContext context) {
-    return null;
+    return GestureDetector(
+
+    );
   }
 }

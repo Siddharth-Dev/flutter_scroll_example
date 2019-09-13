@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class BiDirectionalScrollView extends StatefulWidget {
-  
+
+  final Widget child;
+  final VoidCallback onScrollStarted;
+  final VoidCallback onScrollEnded;
+  final Function(ScrollNotification) onScrollUpdate;
+
+  BiDirectionalScrollView({@required this.child, this.onScrollStarted, this.onScrollEnded, this.onScrollUpdate});
+
   @override
   _BiDirectionalScrollViewState createState() => _BiDirectionalScrollViewState();
   
@@ -16,39 +23,33 @@ class _BiDirectionalScrollViewState extends State<BiDirectionalScrollView> {
         body: _buildView());
   }
   
-  
   Widget _buildView() {
     
-    return ListView(
-      scrollDirection: Axis.vertical,
-      children: <Widget>[
-        _buildChild()
-      ],
-    );;
+    return NotificationListener<ScrollNotification>(
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        children: <Widget>[
+          _buildChild()
+        ],
+      ),
+      onNotification: (ScrollNotification scrollNotification) {
+        if (scrollNotification is ScrollStartNotification) {
+          widget.onScrollStarted();
+        } else if (scrollNotification is ScrollUpdateNotification) {
+          widget.onScrollUpdate(scrollNotification);
+        } else if (scrollNotification is ScrollEndNotification) {
+          widget.onScrollEnded();
+        }
+
+        return false;
+      },
+    );
   }
   
   Widget _buildChild() {
-    
-    List<Widget> columnItems = List();
-    
-    for (int i=0;i<10;i++) {
-      
-      List<Widget> rowItems = List();
-      rowItems.add(SizedBox(width: 10,));
-      for(int j=0;j<20;j++) {
-        rowItems.add(Container(width: 100, height: 100, decoration: BoxDecoration(border: Border.all(color: Colors.black), borderRadius: BorderRadius.all(Radius.elliptical(10, 10))), alignment: Alignment.center, child: Text("Item index $i:$j"),));
-        rowItems.add(SizedBox(width: 10,));
-      }
-      
-      columnItems.add(SizedBox(height: 10,));
-      columnItems.add(Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center, children: rowItems, ));
-    }
-    
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Column(
-        children: columnItems,
-      ),
+      child: widget.child,
     );
   }
 }

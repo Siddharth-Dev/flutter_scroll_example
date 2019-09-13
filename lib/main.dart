@@ -22,7 +22,36 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: BiDirectionalScrollView(),
+      home: BiDirectionalScrollView(
+        child: _buildChild(),
+        onScrollStarted: () => print("Start"),
+        onScrollEnded: () => print("End"),
+        onScrollUpdate: (ScrollNotification scrollInfo) => print("Direction ${scrollInfo.metrics.axis == Axis.vertical ? "Vertical" : "Horizontal"}, Values ${scrollInfo.metrics.pixels}")
+        ,
+      ),
     );
+  }
+
+
+  Widget _buildChild() {
+
+    List<Widget> columnItems = List();
+
+    for (int i=0;i<10;i++) {
+
+      List<Widget> rowItems = List();
+      rowItems.add(SizedBox(width: 10,));
+      for(int j=0;j<20;j++) {
+        rowItems.add(Container(width: 100, height: 100, decoration: BoxDecoration(border: Border.all(color: Colors.black), borderRadius: BorderRadius.all(Radius.elliptical(10, 10))), alignment: Alignment.center, child: Text("Item index $i:$j"),));
+        rowItems.add(SizedBox(width: 10,));
+      }
+
+      columnItems.add(SizedBox(height: 10,));
+      columnItems.add(Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, crossAxisAlignment: CrossAxisAlignment.center, children: rowItems, ));
+    }
+
+    return Column(
+        children: columnItems,
+      );
   }
 }
