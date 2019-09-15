@@ -19,7 +19,6 @@ class _BiDirectionalScrollViewState extends State<BiDirectionalScrollView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Scrolling Demo"),),
         body: _buildView());
   }
   
